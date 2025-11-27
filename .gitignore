@@ -1,0 +1,46 @@
+# ==========================================================
+# GLOBAL
+# ==========================================================
+.DS_Store
+Thumbs.db
+.vscode/
+*.log
+
+# ==========================================================
+# BACKEND (FastAPI / Python)
+# ==========================================================
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/*.pyd
+backend/.env
+backend/youtube_tokens.json
+
+# ==========================================================
+# FRONTEND (Next.js)
+# ==========================================================
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.turbo/
+frontend/dist/
+frontend/.env.local
+
+# ==========================================================
+# ROOT ENV FILES
+# ==========================================================
+.env
+.env.local
+
+# ==========================================================
+# OTHER GENERATED FILES
+# ==========================================================
+*.pid
+*.seed
+*.cover
+coverage/
+dist/
+build/
+tmp/
+.cache/
