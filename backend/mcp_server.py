@@ -6,9 +6,31 @@ from youtube_tools import yt, YouTubeAPIError
 
 logger = logging.getLogger(__name__)
 
+# ============================================================
+# HELPER: EXTRACT TOKEN FROM REQUEST
+# ============================================================
+
+def get_auth_token(request: Request) -> Optional[str]:
+    """
+    Extract auth token from cookies or Cookie header
+    """
+    # Try cookies first (direct browser requests)
+    token = request.cookies.get("yt_access_token")
+    if token:
+        return token
+    
+    # Try Cookie header (forwarded from Next.js)
+    cookie_header = request.headers.get("cookie", "")
+    if cookie_header:
+        for cookie in cookie_header.split(";"):
+            cookie = cookie.strip()
+            if cookie.startswith("yt_access_token="):
+                return cookie.split("=", 1)[1]
+    
+    return None
 
 # ============================================================
-# MCP TOOL SCHEMAS
+# MCP TOOL SCHEMAS (unchanged)
 # ============================================================
 
 MCP_TOOLS_SCHEMA = [
@@ -389,8 +411,14 @@ async def execute_tool(tool_name: str, arguments: Dict[str, Any], request: Reque
     Main tool executor with comprehensive error handling and response formatting
     """
     
-    # Get auth token if available
-    token = request.cookies.get("yt_access_token")
+    # 🔥 FIX: Use helper function to get token
+    token = get_auth_token(request)
+    
+    # Log token status for debugging
+    if token:
+        logger.info(f"Auth token found for {tool_name}")
+    else:
+        logger.warning(f"No auth token for {tool_name}")
     
     try:
         # Route to appropriate tool
@@ -440,42 +468,75 @@ async def execute_tool(tool_name: str, arguments: Dict[str, Any], request: Reque
         # Authenticated tools
         elif tool_name == "like_video":
             if not token:
-                return {"error": "Authentication required", "auth_required": True}
+                logger.error("like_video called without token")
+                return {
+                    "success": False,
+                    "error": "Authentication required",
+                    "auth_required": True
+                }
             result = await yt.like_video(token, arguments["video_id"])
             
         elif tool_name == "unlike_video":
             if not token:
-                return {"error": "Authentication required", "auth_required": True}
+                return {
+                    "success": False,
+                    "error": "Authentication required",
+                    "auth_required": True
+                }
             result = await yt.unlike_video(token, arguments["video_id"])
             
         elif tool_name == "dislike_video":
             if not token:
-                return {"error": "Authentication required", "auth_required": True}
+                return {
+                    "success": False,
+                    "error": "Authentication required",
+                    "auth_required": True
+                }
             result = await yt.dislike_video(token, arguments["video_id"])
             
         elif tool_name == "comment_on_video":
             if not token:
-                return {"error": "Authentication required", "auth_required": True}
+                return {
+                    "success": False,
+                    "error": "Authentication required",
+                    "auth_required": True
+                }
             result = await yt.comment(token, arguments["video_id"], arguments["text"])
             
         elif tool_name == "subscribe_channel":
             if not token:
-                return {"error": "Authentication required", "auth_required": True}
+                return {
+                    "success": False,
+                    "error": "Authentication required",
+                    "auth_required": True
+                }
             result = await yt.subscribe(token, arguments["channel_id"])
             
         elif tool_name == "unsubscribe_channel":
             if not token:
-                return {"error": "Authentication required", "auth_required": True}
+                return {
+                    "success": False,
+                    "error": "Authentication required",
+                    "auth_required": True
+                }
             result = await yt.unsubscribe(token, arguments["subscription_id"])
             
         elif tool_name == "my_subscriptions":
             if not token:
-                return {"error": "Authentication required", "auth_required": True}
+                return {
+                    "success": False,
+                    "error": "Authentication required",
+                    "auth_required": True
+                }
             result = await yt.my_subscriptions(token, arguments.get("max_results", 50))
             
         elif tool_name == "create_playlist":
             if not token:
-                return {"error": "Authentication required", "auth_required": True}
+                return {
+                    "success": False,
+                    "error": "Authentication required",
+                    "auth_required": True
+                }
             result = await yt.create_playlist(
                 token,
                 arguments["title"],
@@ -485,7 +546,11 @@ async def execute_tool(tool_name: str, arguments: Dict[str, Any], request: Reque
             
         elif tool_name == "add_to_playlist":
             if not token:
-                return {"error": "Authentication required", "auth_required": True}
+                return {
+                    "success": False,
+                    "error": "Authentication required",
+                    "auth_required": True
+                }
             result = await yt.add_to_playlist(
                 token,
                 arguments["playlist_id"],
@@ -494,17 +559,29 @@ async def execute_tool(tool_name: str, arguments: Dict[str, Any], request: Reque
             
         elif tool_name == "remove_from_playlist":
             if not token:
-                return {"error": "Authentication required", "auth_required": True}
+                return {
+                    "success": False,
+                    "error": "Authentication required",
+                    "auth_required": True
+                }
             result = await yt.remove_from_playlist(token, arguments["playlist_item_id"])
             
         elif tool_name == "my_playlists":
             if not token:
-                return {"error": "Authentication required", "auth_required": True}
+                return {
+                    "success": False,
+                    "error": "Authentication required",
+                    "auth_required": True
+                }
             result = await yt.user_playlists(token, arguments.get("max_results", 50))
             
         elif tool_name == "playlist_videos":
             if not token:
-                return {"error": "Authentication required", "auth_required": True}
+                return {
+                    "success": False,
+                    "error": "Authentication required",
+                    "auth_required": True
+                }
             result = await yt.playlist_videos(
                 token,
                 arguments["playlist_id"],
@@ -513,21 +590,37 @@ async def execute_tool(tool_name: str, arguments: Dict[str, Any], request: Reque
             
         elif tool_name == "my_channel":
             if not token:
-                return {"error": "Authentication required", "auth_required": True}
+                return {
+                    "success": False,
+                    "error": "Authentication required",
+                    "auth_required": True
+                }
             result = await yt.my_channel(token)
             
         elif tool_name == "watch_history":
             if not token:
-                return {"error": "Authentication required", "auth_required": True}
+                return {
+                    "success": False,
+                    "error": "Authentication required",
+                    "auth_required": True
+                }
             result = await yt.watch_history(token, arguments.get("max_results", 50))
             
         elif tool_name == "liked_videos":
             if not token:
-                return {"error": "Authentication required", "auth_required": True}
+                return {
+                    "success": False,
+                    "error": "Authentication required",
+                    "auth_required": True
+                }
             result = await yt.liked_videos(token, arguments.get("max_results", 50))
             
         else:
-            return {"error": f"Unknown tool: {tool_name}", "available_tools": [t["name"] for t in MCP_TOOLS_SCHEMA]}
+            return {
+                "success": False,
+                "error": f"Unknown tool: {tool_name}",
+                "available_tools": [t["name"] for t in MCP_TOOLS_SCHEMA]
+            }
         
         # Return standardized response
         return {
