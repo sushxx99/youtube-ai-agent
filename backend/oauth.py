@@ -82,33 +82,37 @@ async def oauth_callback(request: Request):
     # Redirect to frontend
     response = RedirectResponse(f"{FRONTEND_URL}?connected=true")
 
-    # --------------------------
-    # STORE COOKIES CORRECTLY !!!
-    # --------------------------
+# --------------------------
+# SECURE CROSS-SITE COOKIES (REQUIRED FOR VERCEL → RENDER)
+# --------------------------
+    COOKIE_DOMAIN = "youtube-ai-agent-backend.onrender.com"
+
     cookie_params = {
         "httponly": True,
-        "secure": True,         # True only when using HTTPS
-        "samesite": "None",     # required for cross-site cookies
+        "secure": True,           # required for SameSite=None
+        "samesite": "None",       # required for cross-site cookies
         "path": "/",
+        "domain": COOKIE_DOMAIN   # 🔥 CRITICAL FIX
     }
 
+    # ACCESS TOKEN
     response.set_cookie(
         key="yt_access_token",
         value=access_token,
-        max_age=3600,
+        max_age=3600,  # 1 hour
         **cookie_params
     )
 
+    # REFRESH TOKEN (if provided by Google)
     if refresh_token:
         response.set_cookie(
             key="yt_refresh_token",
             value=refresh_token,
-            max_age=60 * 60 * 24 * 30,
+            max_age=60 * 60 * 24 * 30,  # 30 days
             **cookie_params
         )
 
     return response
-
 
 # ---------------------------------------------------------
 # USER INFO
