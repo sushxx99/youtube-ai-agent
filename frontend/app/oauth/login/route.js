@@ -1,3 +1,3 @@
 export async function GET() {
-  return Response.redirect("http://localhost:8000/oauth/login");
+  return Response.redirect("https://youtube-ai-agent-backend.onrender.com/oauth/login");
 }
