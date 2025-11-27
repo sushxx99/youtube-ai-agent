@@ -30,13 +30,22 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://localhost:3001",
-        "https://your-production-domain.com"  # Update for production
+
+        # Vercel production domain
+        "https://youtube-ai-agent-two.vercel.app",
+
+        # Vercel project domain
+        "https://youtube-ai-agent.vercel.app",
+
+        # Vercel preview domain (important)
+        "https://youtube-ai-agent-git-main-sushxx99s-projects.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["*"]
 )
+
 
 # Request logging middleware
 @app.middleware("http")

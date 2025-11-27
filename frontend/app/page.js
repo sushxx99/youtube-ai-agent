@@ -12,13 +12,16 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef(null);
 
+  // Backend base URL (example: https://youtube-ai-agent-backend.onrender.com)
+  const BACKEND_URL = process.env.NEXT_PUBLIC_MCP_SERVER_URL.replace("/mcp", "");
+
   useEffect(() => {
     fetchUser();
   }, []);
 
   async function fetchUser() {
     try {
-      const res = await fetch("http://localhost:8000/oauth/userinfo", {
+      const res = await fetch(`${BACKEND_URL}/oauth/userinfo`, {
         credentials: "include",
       });
       const data = await res.json();
@@ -85,7 +88,7 @@ export default function Home() {
     }}>
       <header style={{
         padding: "16px 32px",
-        background: "rgba(24, 24, 24, 0.95)",
+        background: "rgba(24,24,24,0.95)",
         backdropFilter: "blur(20px)",
         borderBottom: "1px solid rgba(255,255,255,0.08)",
         display: "flex",
@@ -115,11 +118,7 @@ export default function Home() {
             }}>
               YouTube AI Agent
             </h1>
-            <p style={{ 
-              margin: "2px 0 0", 
-              fontSize: "13px", 
-              color: "rgba(255,255,255,0.5)" 
-            }}>
+            <p style={{ margin: "2px 0 0", fontSize: "13px", color: "rgba(255,255,255,0.5)" }}>
               Powered by MCP
             </p>
           </div>
@@ -135,13 +134,19 @@ export default function Home() {
                 Connected
               </div>
             </div>
+
             <img src={user.picture} alt="avatar" style={{
               width: "40px",
               height: "40px",
               borderRadius: "50%",
               border: "2px solid rgba(255,255,255,0.2)"
             }} />
-            <button onClick={() => window.location.href = "http://localhost:8000/oauth/logout"}
+
+            {/* LOGOUT BUTTON */}
+            <button
+              onClick={() =>
+                window.location.href = `${BACKEND_URL}/oauth/logout`
+              }
               style={{
                 background: "rgba(255,255,255,0.1)",
                 color: "white",
@@ -154,12 +159,18 @@ export default function Home() {
                 transition: "all 0.2s"
               }}
               onMouseEnter={e => e.target.style.background = "rgba(255,255,255,0.15)"}
-              onMouseLeave={e => e.target.style.background = "rgba(255,255,255,0.1)"}>
+              onMouseLeave={e => e.target.style.background = "rgba(255,255,255,0.1)"}
+            >
               Logout
             </button>
+
           </div>
         ) : (
-          <button onClick={() => window.location.href = "http://localhost:8000/oauth/login"}
+          /* LOGIN BUTTON */
+          <button
+            onClick={() =>
+              window.location.href = `${BACKEND_URL}/oauth/login`
+            }
             style={{
               background: "#ff0000",
               color: "white",
@@ -172,11 +183,13 @@ export default function Home() {
               transition: "all 0.2s"
             }}
             onMouseEnter={e => e.target.style.transform = "scale(1.05)"}
-            onMouseLeave={e => e.target.style.transform = "scale(1)"}>
+            onMouseLeave={e => e.target.style.transform = "scale(1)"}
+          >
             Connect YouTube
           </button>
         )}
       </header>
+
 
       <div ref={scrollRef} style={{
         flex: 1,

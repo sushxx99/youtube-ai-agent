@@ -1,3 +1,4 @@
 export async function GET() {
-  return Response.redirect("https://youtube-ai-agent-backend.onrender.com/oauth/login");
+  const backend = process.env.NEXT_PUBLIC_MCP_SERVER_URL.replace("/mcp", "");
+  return Response.redirect(`${backend}/oauth/login`);
 }
