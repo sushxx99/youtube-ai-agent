@@ -12,7 +12,6 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef(null);
 
-  // Backend base URL (example: https://youtube-ai-agent-backend.onrender.com)
   const BACKEND_URL = process.env.NEXT_PUBLIC_MCP_SERVER_URL.replace("/mcp", "");
 
   useEffect(() => {
@@ -39,10 +38,15 @@ export default function Home() {
     setMessages(prev => [...prev, { role: "user", text: userMsg }]);
 
     try {
+      // 🔥 FIX: Get all cookies from browser
+      const allCookies = document.cookie;
+      
       const res = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
+        headers: { 
+          "Content-Type": "application/json",
+          "X-Forwarded-Cookies": allCookies  // 🔥 SEND COOKIES IN CUSTOM HEADER
+        },
         body: JSON.stringify({ message: userMsg }),
       });
 
@@ -142,7 +146,6 @@ export default function Home() {
               border: "2px solid rgba(255,255,255,0.2)"
             }} />
 
-            {/* LOGOUT BUTTON */}
             <button
               onClick={() =>
                 window.location.href = `${BACKEND_URL}/oauth/logout`
@@ -163,10 +166,8 @@ export default function Home() {
             >
               Logout
             </button>
-
           </div>
         ) : (
-          /* LOGIN BUTTON */
           <button
             onClick={() =>
               window.location.href = `${BACKEND_URL}/oauth/login`
@@ -189,7 +190,6 @@ export default function Home() {
           </button>
         )}
       </header>
-
 
       <div ref={scrollRef} style={{
         flex: 1,

@@ -20,8 +20,9 @@ function getSession(id) {
    CALL MCP TOOL - FIXED WITH COOKIE FORWARDING
 ------------------------------------------ */
 async function callMCP(tool, args, request) {
-  // 🔥 FIX: Extract cookies from incoming request
-  const cookies = request.headers.get("cookie") || "";
+  // 🔥 FIX: Get cookies from custom header (sent by frontend)
+  const cookies = request.headers.get("x-forwarded-cookies") || 
+                  request.headers.get("cookie") || "";
   
   const res = await fetch(`${MCP_URL}/call`, {
     method: "POST",
