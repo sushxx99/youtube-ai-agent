@@ -22,21 +22,20 @@ function getSession(id) {
 import { cookies } from "next/headers";
 
 async function callMCP(tool, args) {
-  // read browser cookies inside server-side router
   const cookieStore = cookies();
   const ytAccessToken = cookieStore.get("yt_access_token")?.value || "";
   const ytRefreshToken = cookieStore.get("yt_refresh_token")?.value || "";
 
-  // forward cookies to backend
   const cookieHeader = [
     ytAccessToken ? `yt_access_token=${ytAccessToken}` : "",
     ytRefreshToken ? `yt_refresh_token=${ytRefreshToken}` : ""
   ].filter(Boolean).join("; ");
 
   const res = await fetch(`${MCP_URL}/call`, {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Cookie": cookieHeader      // 🔥 the FIX
+      "Cookie": cookieHeader
     },
     body: JSON.stringify({
       tool_name: tool,
