@@ -23,19 +23,24 @@ import { cookies } from "next/headers";
 
 async function callMCP(tool, args) {
   const cookieStore = cookies();
-  const ytAccessToken = cookieStore.get("yt_access_token")?.value || "";
-  const ytRefreshToken = cookieStore.get("yt_refresh_token")?.value || "";
 
+  const ytAccessToken = cookieStore.get("yt_access_token")?.value;
+  const ytRefreshToken = cookieStore.get("yt_refresh_token")?.value;
+
+  // Build a proper Cookie header
   const cookieHeader = [
     ytAccessToken ? `yt_access_token=${ytAccessToken}` : "",
     ytRefreshToken ? `yt_refresh_token=${ytRefreshToken}` : ""
-  ].filter(Boolean).join("; ");
+  ]
+    .filter(Boolean)
+    .join("; ");
 
   const res = await fetch(`${MCP_URL}/call`, {
     method: "POST",
+    credentials: "include",        // 🔥 MUST BE ADDED
     headers: {
       "Content-Type": "application/json",
-      "Cookie": cookieHeader
+      "Cookie": cookieHeader       // 🔥 MUST BE SENT MANUALLY
     },
     body: JSON.stringify({
       tool_name: tool,
@@ -45,7 +50,6 @@ async function callMCP(tool, args) {
 
   return res.json();
 }
-
 
 
 /* ------------------------------------------
