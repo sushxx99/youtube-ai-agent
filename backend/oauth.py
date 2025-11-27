@@ -87,8 +87,8 @@ async def oauth_callback(request: Request):
     # --------------------------
     cookie_params = {
         "httponly": True,
-        "secure": False,         # True only when using HTTPS
-        "samesite": "Lax",
+        "secure": True,         # True only when using HTTPS
+        "samesite": "None",     # required for cross-site cookies
         "path": "/",
     }
 
