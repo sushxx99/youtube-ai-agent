@@ -12,21 +12,32 @@ logger = logging.getLogger(__name__)
 
 def get_auth_token(request: Request) -> Optional[str]:
     """
-    Extract auth token from cookies or Cookie header
+    Extract auth token from:
+    1. Authorization header (from frontend localStorage)
+    2. Cookies
+    3. Raw Cookie header
     """
-    # Try cookies first (direct browser requests)
+
+    # 1️⃣ NEW — Authorization header
+    auth_header = request.headers.get("authorization", "")
+    if auth_header.startswith("Bearer "):
+        token = auth_header.replace("Bearer ", "", 1).strip()
+        if token:
+            return token
+
+    # 2️⃣ Cookies (Render → Vercel)
     token = request.cookies.get("yt_access_token")
     if token:
         return token
-    
-    # Try Cookie header (forwarded from Next.js)
+
+    # 3️⃣ Raw Cookie header
     cookie_header = request.headers.get("cookie", "")
     if cookie_header:
         for cookie in cookie_header.split(";"):
             cookie = cookie.strip()
             if cookie.startswith("yt_access_token="):
                 return cookie.split("=", 1)[1]
-    
+
     return None
 
 # ============================================================

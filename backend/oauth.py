@@ -20,6 +20,9 @@ SCOPES = [
 ]
 
 
+# -------------------------------------------------
+# LOGIN
+# -------------------------------------------------
 @router.get("/oauth/login")
 def oauth_login():
     params = {
@@ -35,6 +38,9 @@ def oauth_login():
     return RedirectResponse(url)
 
 
+# -------------------------------------------------
+# CALLBACK
+# -------------------------------------------------
 @router.get("/oauth/callback")
 async def oauth_callback(request: Request):
     code = request.query_params.get("code")
@@ -63,28 +69,47 @@ async def oauth_callback(request: Request):
 
     response = RedirectResponse(f"{FRONTEND_URL}?connected=true")
 
-    # COOKIE FIX — no domain!
+    # CORRECT COOKIE SETTINGS
     cookie_params = {
-    "httponly": True,
-    "secure": True,
-    "samesite": "None",
-    "path": "/"
-}
+        "httponly": True,
+        "secure": True,
+        "samesite": "None",
+        "path": "/"
+    }
 
-
-    response.set_cookie("yt_access_token", access_token, max_age=3600, **cookie_params)
+    # SET COOKIES
+    response.set_cookie(
+        "yt_access_token",
+        access_token,
+        max_age=3600,
+        **cookie_params
+    )
 
     if refresh_token:
         response.set_cookie(
             "yt_refresh_token",
             refresh_token,
             max_age=60 * 60 * 24 * 30,
-            **cookie_params,
+            **cookie_params
         )
 
     return response
 
 
+# -------------------------------------------------
+# GET TOKEN FOR FRONTEND (OPTIONAL)
+# -------------------------------------------------
+@router.get("/oauth/token")
+async def get_token(request: Request):
+    token = request.cookies.get("yt_access_token")
+    if not token:
+        return JSONResponse({"token": None}, status_code=401)
+    return {"token": token}
+
+
+# -------------------------------------------------
+# USERINFO
+# -------------------------------------------------
 @router.get("/oauth/userinfo")
 async def userinfo(request: Request):
     token = request.cookies.get("yt_access_token")
@@ -111,6 +136,9 @@ async def userinfo(request: Request):
     }
 
 
+# -------------------------------------------------
+# LOGOUT
+# -------------------------------------------------
 @router.get("/oauth/logout")
 def logout():
     resp = RedirectResponse(f"{FRONTEND_URL}/?logout=true")

@@ -12,6 +12,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef(null);
 
+  // Backend base URL (example: https://youtube-ai-agent-backend.onrender.com)
   const BACKEND_URL = process.env.NEXT_PUBLIC_MCP_SERVER_URL.replace("/mcp", "");
 
   useEffect(() => {
@@ -19,54 +20,70 @@ export default function Home() {
   }, []);
 
   async function fetchUser() {
-    try {
-      const res = await fetch(`${BACKEND_URL}/oauth/userinfo`, {
+  try {
+    const res = await fetch(`${BACKEND_URL}/oauth/userinfo`, {
+      credentials: "include",
+    });
+    const data = await res.json();
+
+    if (data.logged_in) {
+      setUser(data.profile);
+
+      // 🔥 Fetch backend token & store it
+      const tokenRes = await fetch(`${BACKEND_URL}/oauth/token`, {
         credentials: "include",
       });
-      const data = await res.json();
-      if (data.logged_in) setUser(data.profile);
-    } catch (err) {}
-  }
+      const tokenData = await tokenRes.json();
+
+      if (tokenData.token) {
+        localStorage.setItem("yt_access_token", tokenData.token);
+        console.log("✅ Token saved to localStorage");
+      }
+    }
+  } catch (err) {}
+}
+
 
   async function sendMessage() {
-    if (!input.trim() || loading) return;
+  if (!input.trim() || loading) return;
 
-    const userMsg = input;
-    setInput("");
-    setLoading(true);
+  const userMsg = input;
+  setInput("");
+  setLoading(true);
 
-    setMessages(prev => [...prev, { role: "user", text: userMsg }]);
+  setMessages(prev => [...prev, { role: "user", text: userMsg }]);
 
-    try {
-      // 🔥 FIX: Get all cookies from browser
-      const allCookies = document.cookie;
-      
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "X-Forwarded-Cookies": allCookies  // 🔥 SEND COOKIES IN CUSTOM HEADER
-        },
-        body: JSON.stringify({ message: userMsg }),
-      });
+  try {
+    // 🔥 Retrieve token from localStorage
+    const token = localStorage.getItem("yt_access_token");
 
-      const data = await res.json();
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": token ? `Bearer ${token}` : ""
+      },
+      body: JSON.stringify({ message: userMsg }),
+    });
 
-      if (data.type === "tool_result" && data.data?.data?.items) {
-        setMessages(prev => [
-          ...prev,
-          { role: "assistant", text: data.reply },
-          { role: "videos", videos: data.data.data.items }
-        ]);
-      } else {
-        setMessages(prev => [...prev, { role: "assistant", text: data.reply }]);
-      }
-    } catch (err) {
-      setMessages(prev => [...prev, { role: "assistant", text: "⚠️ Connection error" }]);
-    } finally {
-      setLoading(false);
+    const data = await res.json();
+
+    if (data.type === "tool_result" && data.data?.data?.items) {
+      setMessages(prev => [
+        ...prev,
+        { role: "assistant", text: data.reply },
+        { role: "videos", videos: data.data.data.items }
+      ]);
+    } else {
+      setMessages(prev => [...prev, { role: "assistant", text: data.reply }]);
     }
+  } catch (err) {
+    setMessages(prev => [...prev, { role: "assistant", text: "⚠️ Connection error" }]);
+  } finally {
+    setLoading(false);
   }
+}
+
 
   useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -146,6 +163,7 @@ export default function Home() {
               border: "2px solid rgba(255,255,255,0.2)"
             }} />
 
+            {/* LOGOUT BUTTON */}
             <button
               onClick={() =>
                 window.location.href = `${BACKEND_URL}/oauth/logout`
@@ -166,8 +184,10 @@ export default function Home() {
             >
               Logout
             </button>
+
           </div>
         ) : (
+          /* LOGIN BUTTON */
           <button
             onClick={() =>
               window.location.href = `${BACKEND_URL}/oauth/login`
@@ -190,6 +210,7 @@ export default function Home() {
           </button>
         )}
       </header>
+
 
       <div ref={scrollRef} style={{
         flex: 1,
