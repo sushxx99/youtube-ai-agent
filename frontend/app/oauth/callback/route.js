@@ -6,8 +6,8 @@ export async function GET(request) {
     return new Response("Missing 'code' from Google OAuth", { status: 400 });
   }
 
-  // Get backend URL from env variable
-  const backend = process.env.NEXT_PUBLIC_MCP_SERVER_URL.replace("/mcp", "");
+  // Always use BACKEND URL directly (NOT MCP URL)
+  const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   // Redirect Google OAuth code → FastAPI backend callback
   return Response.redirect(`${backend}/oauth/callback?code=${code}`);
