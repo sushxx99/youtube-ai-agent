@@ -24,7 +24,7 @@ app = FastAPI(
 # MIDDLEWARE
 # ============================================================
 
-# CORS Configuration
+# CORS Configuration 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -37,8 +37,11 @@ app.add_middleware(
         # Vercel project domain
         "https://youtube-ai-agent.vercel.app",
 
-        # Vercel preview domain (important)
-        "https://youtube-ai-agent-git-main-sushxx99s-projects.vercel.app"
+        # Vercel preview domain
+        "https://youtube-ai-agent-git-main-sushxx99s-projects.vercel.app",
+
+        # 🔥 REQUIRED: Backend origin itself (Render)
+        "https://youtube-ai-agent-backend.onrender.com"
     ],
     allow_credentials=True,
     allow_methods=["*"],
