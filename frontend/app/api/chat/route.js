@@ -1,4 +1,4 @@
-const MCP_URL = "http://localhost:8000/mcp";  
+const MCP_URL = process.env.NEXT_PUBLIC_MCP_SERVER_URL;
 const sessions = new Map();
 
 /* ------------------------------------------
@@ -33,8 +33,7 @@ async function callMCP(tool, args) {
     ytRefreshToken ? `yt_refresh_token=${ytRefreshToken}` : ""
   ].filter(Boolean).join("; ");
 
-  const res = await fetch("http://localhost:8000/mcp/call", {
-    method: "POST",
+  const res = await fetch(`${MCP_URL}/call`, {
     headers: {
       "Content-Type": "application/json",
       "Cookie": cookieHeader      // 🔥 the FIX

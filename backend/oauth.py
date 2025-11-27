@@ -13,6 +13,7 @@ router = APIRouter()
 CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")   # http://localhost:8000/oauth/callback
+FRONTEND_URL = os.getenv("FRONTEND_URL")
 
 
 # REQUIRED SCOPES
@@ -79,7 +80,7 @@ async def oauth_callback(request: Request):
         return JSONResponse(tokens, status_code=400)
 
     # Redirect to frontend
-    response = RedirectResponse("http://localhost:3000/?connected=true")
+    response = RedirectResponse(f"{FRONTEND_URL}?connected=true")
 
     # --------------------------
     # STORE COOKIES CORRECTLY !!!
@@ -145,7 +146,7 @@ async def get_userinfo(request: Request):
 # ---------------------------------------------------------
 @router.get("/oauth/logout")
 def logout():
-    response = RedirectResponse("http://localhost:3000/?logged_out=true")
+    response = RedirectResponse(f"{FRONTEND_URL}/?logged_out=true")
     response.delete_cookie("yt_access_token", path="/")
     response.delete_cookie("yt_refresh_token", path="/")
     return response
