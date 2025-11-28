@@ -1,23 +1,13 @@
 export default function VideoCard({ item }) {
-  // Handle both video results and channel results
-  let videoId = item.id?.videoId || item.id || "";
+  const videoId = item.id?.videoId || item.id;
   const snippet = item.snippet || {};
   const stats = item.statistics || {};
 
-  // Detect if this card represents a CHANNEL instead of a video
-  const isChannel = videoId.startsWith("UC"); // YouTube channel IDs start with UC
-
-  // Safe fallback ID for display (never crash substring)
-  const shortId = videoId ? videoId.substring(0, 8) : "unknown";
-
-  // Thumbnail fallback
   const thumbnail =
-    snippet.thumbnails?.high?.url ||
-    snippet.thumbnails?.medium?.url ||
-    "https://via.placeholder.com/300?text=No+Image";
+    snippet.thumbnails?.high?.url || snippet.thumbnails?.medium?.url;
 
-  const title = snippet.title || "Untitled";
-  const channel = snippet.channelTitle || "Unknown channel";
+  const title = snippet.title;
+  const channel = snippet.channelTitle;
 
   const views = stats.viewCount
     ? parseInt(stats.viewCount) > 1000000
@@ -25,9 +15,10 @@ export default function VideoCard({ item }) {
       : `${(parseInt(stats.viewCount) / 1000).toFixed(0)}K views`
     : "";
 
-  // Dynamic URL:
-  // If it's a video → open video page
-  // If it's a channel → open channel page
+  // ⭐ Detect channel vs video
+  const isChannel = videoId?.startsWith("UC");
+
+  // ⭐ Correct URL based on type
   const url = isChannel
     ? `https://www.youtube.com/channel/${videoId}`
     : `https://www.youtube.com/watch?v=${videoId}`;
@@ -64,21 +55,25 @@ export default function VideoCard({ item }) {
             objectFit: "cover",
           }}
         />
-        <div
-          style={{
-            position: "absolute",
-            bottom: "8px",
-            right: "8px",
-            background: "rgba(0,0,0,0.9)",
-            padding: "4px 8px",
-            borderRadius: "4px",
-            fontSize: "12px",
-            fontWeight: "600",
-            color: "white",
-          }}
-        >
-          {shortId}
-        </div>
+
+        {/* ⭐ Only show badge when it's a video */}
+        {!isChannel && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "8px",
+              right: "8px",
+              background: "rgba(0,0,0,0.9)",
+              padding: "4px 8px",
+              borderRadius: "4px",
+              fontSize: "12px",
+              fontWeight: "600",
+              color: "white",
+            }}
+          >
+            {videoId.substring(0, 8)}
+          </div>
+        )}
       </div>
 
       <div style={{ padding: "16px" }}>
@@ -115,7 +110,8 @@ export default function VideoCard({ item }) {
             {channel}
           </span>
 
-          {views && !isChannel && (
+          {/* Only show views for videos */}
+          {!isChannel && views && (
             <span
               style={{
                 color: "rgba(255,255,255,0.4)",
