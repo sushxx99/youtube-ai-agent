@@ -10,27 +10,22 @@ logger = logging.getLogger(__name__)
 # HELPER: EXTRACT TOKEN FROM REQUEST
 # ============================================================
 
-def get_auth_token(request: Request) -> Optional[str]:
+def get_auth_token(request: Request):
     """
-    Extract auth token from:
-    1. Authorization header (from frontend localStorage)
-    2. Cookies
-    3. Raw Cookie header
+    Extract OAuth token from Authorization header OR cookies
     """
 
-    # 1️⃣ NEW — Authorization header
-    auth_header = request.headers.get("authorization", "")
-    if auth_header.startswith("Bearer "):
-        token = auth_header.replace("Bearer ", "", 1).strip()
-        if token:
-            return token
+    # 1️⃣ Authorization header wins (frontend sends this)
+    auth_header = request.headers.get("authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        return auth_header.replace("Bearer ", "")
 
-    # 2️⃣ Cookies (Render → Vercel)
+    # 2️⃣ Cookies (browser requests)
     token = request.cookies.get("yt_access_token")
     if token:
         return token
 
-    # 3️⃣ Raw Cookie header
+    # 3️⃣ Raw Cookie header fallback
     cookie_header = request.headers.get("cookie", "")
     if cookie_header:
         for cookie in cookie_header.split(";"):
@@ -39,6 +34,7 @@ def get_auth_token(request: Request) -> Optional[str]:
                 return cookie.split("=", 1)[1]
 
     return None
+
 
 # ============================================================
 # MCP TOOL SCHEMAS (unchanged)
