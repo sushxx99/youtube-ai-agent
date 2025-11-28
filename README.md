@@ -1,449 +1,353 @@
-🚀 YouTube AI Agent – MCP-Powered Intelligent Assistant
+Perfect.
+I will now generate your **complete README.md** in the **exact same style, layout, tone, spacing, emojis, and structure** as the sample — but using **your project’s content**.
 
-A production-ready AI agent that integrates seamlessly with YouTube using the Model Context Protocol (MCP) — enabling natural-language interactions for:
+Here is your **final GitHub-ready README**:
 
-Video search & discovery
+---
 
-Trending content
+# 🎥 YouTube AI Agent – MCP-Powered Intelligent Assistant
 
-Recommendations
+A fully functional **Model Context Protocol (MCP)** powered YouTube assistant that integrates with the **YouTube Data API v3** through a custom **FastAPI backend** using **OAuth2**, with a modern, responsive **Next.js (React)** frontend deployed on **Vercel**.
 
-Likes, comments, subscriptions
+This MCP Agent allows users to:
 
-Playlist management
+🔍 Search YouTube videos
+📺 Fetch channel details & videos
+🔥 View trending content
+ℹ️ Fetch video metadata
+❤️ Like / Unlike videos
+💬 Comment on videos
+🔔 Subscribe / Unsubscribe
+🎵 Create & manage playlists
+🕒 View watch history
+📚 View liked videos
+⚙️ Multi-turn natural language chat
+🔐 Google OAuth2 login with secure cookies
 
-Channel & metadata retrieval
+---
 
-📺 Live Demo
+# 🚀 Live Deployment
 
-👉 https://youtube-ai-agent-two.vercel.app
+### **Frontend (Vercel)**
 
-🔗 GitHub Repository
+🔗 [https://youtube-ai-agent-two.vercel.app](https://youtube-ai-agent-two.vercel.app)
 
-👉 https://github.com/sushxx99/youtube-ai-agent
+### **Backend (Render)**
 
-📚 Table of Contents
+🔗 [https://youtube-ai-agent-backend.onrender.com](https://youtube-ai-agent-backend.onrender.com)
 
-Problem Statement
+---
 
-Solution Overview
+# 🏗 Project Architecture
 
-Key Features
-
-System Architecture
-
-Technology Stack
-
-MCP Integration
-
-Project Structure
-
-Setup & Installation
-
-Deployment
-
-API Endpoints
-
-MCP Tools Reference
-
-Usage Guide
-
-Performance & Metrics
-
-Limitations & Future Work
-
-Credits
-
-License
-
-🎯 Problem Statement
-Objective
-
-Build a fully functional AI agent using any framework + any LLM provider, capable of interacting with an external platform through Model Context Protocol (MCP).
-
-Requirements
-
-✔️ Platform Integration (YouTube, Reddit, Instagram, Spotify, etc.)
-
-✔️ MCP Server to expose platform APIs as tools
-
-✔️ Agent actions: search, retrieve, like, comment, subscribe, playlist operations
-
-✔️ Fully deployed & publicly accessible
-
-✔️ 48-hour time limit
-
-✔️ Clear documentation
-
-Evaluation Criteria
-Category	Description
-Accuracy	Correct MCP execution + proper API calls
-Performance	Low latency & responsiveness
-AI Integration	Natural-language understanding & tool routing
-Architecture	Modular, scalable, production-ready
-💡 Solution Overview
-
-This project implements a full-stack, production-grade YouTube MCP agent using:
-
-FastAPI MCP Server → exposes 22 YouTube tools
-
-Next.js API Backend → intent detection, session memory, tool orchestration
-
-React Frontend → chat UI + video cards
-
-Google OAuth 2.0 → secure authentication
-
-Vercel + Render deployment
-
-✔️ How this solution meets every requirement
-Requirement	Implementation
-Platform Integration	YouTube Data API v3 (OAuth)
-MCP Server	FastAPI MCP Server
-Agent Actions	Search, like, comment, subscribe, playlists
-Deployment	Vercel (FE) + Render (BE)
-Documentation	Full README + structured explanation
-Scalability	Modular codebase & tool definitions
-✨ Key Features
-🔍 Video Discovery
-
-Natural-language search
-
-Trending videos (with region/category filters)
-
-paginated results
-
-context-aware recommendations
-
-🎬 YouTube Interactions
-
-Like / Unlike / Dislike
-
-Comment
-
-Subscribe / Unsubscribe
-
-Playlist creation + add/remove videos
-
-🧠 Intelligent Agent Logic
-
-Intent classifier (10+ intents)
-
-Multi-turn memory
-
-Auto video ID extraction
-
-🔐 Authentication
-
-Google OAuth 2.0
-
-HTTP-only cookies
-
-Token exchange & secure storage
-
-🎨 UI & UX
-
-Modern chat interface
-
-Rich thumbnails + metadata
-
-Clean layout + loading states
-
-🏗️ System Architecture
-USER (Browser - Vercel Frontend)
-        │
-        │ HTTPS + Cookies
-        ▼
-┌────────────────────────────────────────────┐
-│          NEXT.JS FRONTEND (Vercel)        │
-│--------------------------------------------│
-│ React UI                                   │
-│ Chat Interface                              │
-│ /api/chat → Intent Detection + MCP calls    │
-└────────────────────────────────────────────┘
-        │
-        │ POST /mcp/call
-        ▼
-┌────────────────────────────────────────────┐
-│       FASTAPI MCP SERVER (Render)          │
-│--------------------------------------------│
-│ main.py – FastAPI App                      │
-│ mcp_server.py – 22 MCP tools               │
-│ oauth.py – Login, Callback, Logout         │
-│ youtube_tools.py – YouTube API wrappers    │
-└────────────────────────────────────────────┘
-        │
-        │ OAuth Token Exchange
-        ▼
-      GOOGLE OAUTH SERVER
-        │
-        ▼
-      YOUTUBE DATA API v3
-
-🛠️ Technology Stack
-Frontend
-
-Next.js 14
-
-React
-
-Vercel Deployment
-
-Fetch API
-
-Modern UI components
-
-Backend
-
-FastAPI
-
-Uvicorn
-
-httpx
-
-OAuth 2.0
-
-APIs + Protocols
-
-YouTube Data API v3
-
-Google OAuth 2.0
-
-Model Context Protocol (MCP)
-
-DevOps
-
-GitHub
-
-Vercel
-
-Render
-
-Secure environment variables
-
-🔗 MCP Integration
-What is MCP?
-
-A protocol that allows LLMs to call backend tools in a standardized format.
-
-How this project uses MCP:
-
-FastAPI defines 22 MCP tools
-
-Tools map directly to YouTube API endpoints
-
-Next.js picks correct tool through intent classifier
-
-FastAPI executes & returns structured responses
-
-📁 Project Structure
+```
 youtube-ai-agent/
 │
-├── backend/
-│   ├── main.py
-│   ├── mcp_server.py
-│   ├── oauth.py
-│   ├── youtube_tools.py
-│   ├── requirements.txt
-│   └── .env
+├── backend/                       # MCP Server (FastAPI)
+│   ├── main.py                    # FastAPI app, routes, CORS
+│   ├── mcp_server.py              # MCP tool dispatcher
+│   ├── youtube_tools.py           # All 22 YouTube MCP tools
+│   ├── oauth.py                   # Google OAuth2 login + callback
+│   ├── requirements.txt           # Backend dependencies
+│   └── .env                       # OAuth + API keys
 │
-├── frontend/
-│   ├── app/
-│   ├── api/
-│   ├── components/
+├── frontend/                      # MCP Agent UI (Next.js 14)
+│   ├── app/                       # App Router UI
+│   ├── api/                       # Chat backend API (intent → MCP)
+│   ├── components/                # Chat UI + Video Cards
 │   ├── next.config.js
 │   ├── package.json
 │   └── .env.local
 │
-├── .gitignore
-└── README.md
+└── README.md                      # (This file)
+```
 
-🚀 Setup & Installation
-Step 1 — Clone Repository
-git clone https://github.com/sushxx99/youtube-ai-agent.git
-cd youtube-ai-agent
+---
 
-Step 2 — Google OAuth Setup
+# 🔐 OAuth2 Setup (Completed)
 
-(Your entire content is preserved — formatted cleanly.)
+Backend uses:
 
-Step 3 — Backend Setup
+✔ CLIENT_ID
+✔ CLIENT_SECRET
+✔ REDIRECT_URI
+✔ Access Token
+✔ Refresh Token (via Google login)
 
-venv
+The backend securely stores tokens in **HTTP-only cookies**, allowing:
 
-install requirements
+⚡ Automatic authentication
+⚡ Protected MCP calls
+⚡ No token exposure on frontend
 
-add .env
+---
 
-run uvicorn main:app --reload
+# ⚙️ Backend Environment (Render)
 
-Step 4 — Frontend Setup
+Set these in Render Dashboard:
 
+```
+GOOGLE_CLIENT_ID=xxxxxx.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=xxxxxx
+GOOGLE_REDIRECT_URI=https://youtube-ai-agent-backend.onrender.com/oauth/callback
+FRONTEND_URL=https://youtube-ai-agent-two.vercel.app
+YOUTUBE_API_KEY=xxxxxxxxx
+```
+
+Backend auto-handles:
+
+✔ OAuth login
+✔ Token exchange
+✔ Cookie storage
+✔ MCP tool execution
+
+---
+
+# ⚙️ Frontend Environment (Vercel)
+
+```
+NEXT_PUBLIC_MCP_SERVER_URL=https://youtube-ai-agent-backend.onrender.com/mcp
+NEXT_PUBLIC_BACKEND_URL=https://youtube-ai-agent-backend.onrender.com
+NEXT_PUBLIC_FRONTEND_URL=https://youtube-ai-agent-two.vercel.app
+```
+
+---
+
+# 🧠 MCP Tools Implemented
+
+### **Discovery**
+
+| MCP Tool        | Description           |
+| --------------- | --------------------- |
+| search_videos   | Search YouTube videos |
+| search_channels | Search channels       |
+| trending_videos | Fetch trending videos |
+
+### **Details**
+
+| MCP Tool        | Description    |
+| --------------- | -------------- |
+| video_details   | Video metadata |
+| channel_details | Channel info   |
+| video_comments  | Fetch comments |
+
+### **Actions (OAuth)**
+
+| MCP Tool         | Description      |
+| ---------------- | ---------------- |
+| like_video       | Like a video     |
+| unlike_video     | Remove like      |
+| dislike_video    | Dislike          |
+| comment_on_video | Comment on video |
+
+### **Subscriptions**
+
+| MCP Tool            | Description             |
+| ------------------- | ----------------------- |
+| subscribe_channel   | Subscribe               |
+| unsubscribe_channel | Unsubscribe             |
+| my_subscriptions    | User subscriptions list |
+
+### **Playlists**
+
+| MCP Tool             | Description         |
+| -------------------- | ------------------- |
+| create_playlist      | Create playlist     |
+| add_to_playlist      | Add video           |
+| remove_from_playlist | Remove video        |
+| my_playlists         | List user playlists |
+| playlist_videos      | Playlist items      |
+
+### **User Data**
+
+| MCP Tool      | Description    |
+| ------------- | -------------- |
+| my_channel    | User’s channel |
+| watch_history | History        |
+| liked_videos  | Liked videos   |
+
+---
+
+# ⭐ New Features Added (Updated)
+
+### ✅ 1. Fully Working Like / Unlike System
+
+Works across:
+
+✔ Search results
+✔ Trending videos
+✔ Channel videos
+✔ User playlists
+✔ User history
+✔ User liked videos
+
+Updates UI instantly.
+
+---
+
+### ✅ 2. Comment on Any Video
+
+Example:
+
+```
+comment on dQw4w9WgXcQ "Amazing video!"
+```
+
+---
+
+### ✅ 3. Playlist Management
+
+Full create → add → remove workflow.
+
+---
+
+### ✅ 4. Multi-Turn Chat Context
+
+The agent remembers:
+
+* Your last search
+* The previous list of videos
+* What "like the first one" refers to
+
+---
+
+### ✅ 5. Trending with Region Support
+
+```
+show me trending videos
+```
+
+---
+
+### 📱 Responsive UI
+
+✔ Mobile-friendly
+✔ Auto responsive grid
+✔ Smooth transitions
+✔ YouTube-style layout
+
+---
+
+# 🧩 System Flow
+
+```
+User
+  ↓
+Next.js Frontend (Chat UI + Video Grid)
+  ↓ /api/chat
+Intent Classifier (LLM)
+  ↓ chooses MCP tool
+Backend (FastAPI MCP Server)
+  ↓
+YouTube Data API v3
+  ↓
+Backend Response
+  ↓
+Frontend displays videos + actions
+```
+
+---
+
+# 🛠 Local Development Guide
+
+### **Backend**
+
+```bash
+cd backend
+python -m venv venv
+venv\Scripts\activate  # Windows
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
+```
+
+Runs at:
+👉 [http://localhost:8000](http://localhost:8000)
+
+---
+
+### **Frontend**
+
+```bash
+cd frontend
 npm install
+npm run dev
+```
 
-add .env.local
+Runs at:
+👉 [http://localhost:3000](http://localhost:3000)
 
-run npm run dev
+---
 
-Step 5 — Test everything locally
-🌐 Deployment
-Frontend → Vercel
+# 🧪 Example Commands
 
-Select /frontend
+### 🔍 Search
 
-Add environment variables
+```
+python tutorials
+travel vlogs
+```
 
-Backend → Render
+### 🎬 Channel Videos
 
-Select /backend
+```
+channel tseries
+```
 
-Install + Start commands
+### 🔥 Trending
 
-Add env vars
+```
+trending videos
+```
 
-📡 API Endpoints
-FastAPI (Backend)
-Endpoint	Method	Description
-/	GET	Health check
-/mcp/tools	GET	List tools
-/mcp/call	POST	Execute MCP tool
-/oauth/login	GET	OAuth login
-/oauth/callback	GET	Token exchange
-/oauth/logout	GET	Clear cookies
-Next.js (Frontend)
-Endpoint	Method	Description
-/api/chat	POST	Intent + MCP orchestration
-/api/oauth	GET	Redirect handler
-/api/callback	GET	OAuth callback
-🛠️ MCP Tools Reference
-🔍 Discovery Tools
+### ❤️ Like a Video
 
-search_videos
+```
+like dQw4w9WgXcQ
+```
 
-search_channels
+### 💬 Comment
 
-trending_videos
+```
+comment on dQw4w9WgXcQ "Beautiful edit!"
+```
 
-ℹ️ Details
+### 🔔 Subscribe
 
-video_details
+```
+subscribe to @mkbhd
+```
 
-channel_details
+### 📝 Playlist
 
-video_comments
+```
+create playlist coding
+add dQw4w9WgXcQ to playlist coding
+```
 
-🎬 Actions (OAuth)
+---
 
-like_video
+# 🎯 Assignment Requirements (Checked)
 
-unlike_video
+| Requirement                      | Status                |
+| -------------------------------- | --------------------- |
+| Build MCP Agent                  | ✅ Completed           |
+| Integrate external API (YouTube) | ✅ Done                |
+| Expose MCP tools                 | ✅ 22 tools            |
+| Implement actions                | ❤️ 👍 💬 🔔           |
+| Fully deployed                   | ✔ Vercel + Render     |
+| Public GitHub Repo               | ✔ Yes                 |
+| Good UI                          | ✔ Modern + Responsive |
+| OAuth Integration                | ✔ Secure Cookies      |
 
-dislike_video
+---
 
-comment_on_video
+# 🧑‍💻 Developer
 
-👥 Subscriptions (OAuth)
+**Sushma Srinivas**
+MCP Agent Developer | FastAPI + Next.js | YouTube API Specialist
 
-subscribe_channel
+---
 
-unsubscribe_channel
+# 🎉 Built with ❤️ in 48 hours
 
-my_subscriptions
-
-🎵 Playlists
-
-create_playlist
-
-add_to_playlist
-
-remove_from_playlist
-
-my_playlists
-
-playlist_videos
-
-👤 User Data
-
-my_channel
-
-watch_history
-
-liked_videos
-
-📖 Usage Guide
-
-Examples:
-
-“python tutorials”
-
-“trending videos”
-
-“like dQw4w9WgXcQ”
-
-“comment on dQw4w9WgXcQ ‘Nice!’”
-
-“subscribe to @mkbhd”
-
-“more”
-
-📊 Performance & Metrics
-Operation	Avg Latency
-Search	1.2s
-Details	0.8s
-Like/Unlike	0.5s
-Comment	1.0s
-Trending	1.5s
-
-Intent accuracy: 95%
-
-API success rate: 99.2%
-
-⚠️ Limitations & Future Work
-Current Limitations
-
-No token auto-refresh
-
-Session resets on backend restart
-
-YouTube quota limits
-
-Future Enhancements
-
-Redis/Postgres session store
-
-WebSockets
-
-Semantic search
-
-Video upload tools
-
-Analytics tools
-
-Better mobile UI
-
-🙏 Credits
-
-Developer: sushxx99
-
-APIs: YouTube Data API v3
-
-Frameworks: Next.js, FastAPI
-
-Deployment: Vercel + Render
-
-Protocol: Model Context Protocol
-
-📄 License
-
-For educational use as part of an academic + technical assignment.
-
-🔗 Important Links
-
-Live app → https://youtube-ai-agent-two.vercel.app
-
-Backend → https://youtube-ai-agent-backend.onrender.com
-
-MCP Tools → https://youtube-ai-agent-backend.onrender.com/mcp/tools
-
-GitHub → https://github.com/sushxx99/youtube-ai-agent
-
-🎉 Built with ❤️ in 48 hours
+Powered by **MCP + FastAPI + Next.js + YouTube Data API v3**
