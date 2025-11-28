@@ -73,15 +73,18 @@ function detectIntent(text) {
 
   if (/trending|popular|viral/i.test(t))
     return "trending";
-  
+
+  // ⭐ Corrected: detect channel-intent only for channel-related messages
   if (/best .*channels?/i.test(t) || /top .*channels?/i.test(t) || /recommend .*channels?/i.test(t))
     return "top_channels";
 
-  if (/best|top|recommend/i.test(t))
+  // ⭐ Recommend ONLY when it's not referring to channels
+  if (/recommend/i.test(t))
     return "recommend";
 
   return "search";
 }
+
 
 function cleanQuery(text) {
   return text
@@ -386,28 +389,17 @@ export async function POST(req) {
        BEST / TOP CHANNELS
     ------------------------------------------ */
     if (intent === "top_channels") {
-      // STEP 1 — Clean query properly
-      let cleaned = message
-        .replace(/best|top|recommend/gi, "")
-        .replace(/channels?/gi, "")
-        .trim();
+      // Normalize message
+      const cleaned = message
+        .replace(/best|top|recommend|channel|channels/gi, "")
+        .trim() || "technology";
 
-      // STEP 2 — If cleaned is empty or too short, set a strong default
-      if (!cleaned || cleaned.length < 2) {
-        cleaned = "best tech youtube channels";
-      } else {
-        // STEP 3 — Improve search quality by expanding query
-        cleaned = `${cleaned} youtube channels`;
-      }
+      // Fetch channels
+      const result = await callMCP("search_channels", {
+        query: cleaned,
+        max_results: 10
+      }, req);
 
-      // STEP 4 — Call MCP
-      const result = await callMCP(
-        "search_channels",
-        { query: cleaned, max_results: 10 },
-        req
-      );
-
-      // STEP 5 — Handle no results
       if (!result.success || !result.data?.items?.length) {
         return Response.json({
           reply: `❌ No channels found for "${cleaned}".`,
@@ -415,13 +407,36 @@ export async function POST(req) {
         });
       }
 
-      // STEP 6 — Successful response
+      // 🔥 Convert channels → safe video-compatible format
+      const channelsAsVideos = result.data.items.map(ch => {
+        return {
+          id: (ch.id?.channelId || "placeholderId").substring(0, 11), // must be 11 chars
+          snippet: {
+            title: ch.snippet?.title || "Unnamed Channel",
+            channelTitle: ch.snippet?.title || "Channel",
+            thumbnails: ch.snippet?.thumbnails || {
+              high: { url: "https://via.placeholder.com/300?text=No+Image" }
+            }
+          },
+          statistics: {
+            viewCount: 0
+          }
+        };
+      });
+
+
+      // Send response in EXACT SAME SHAPE as real video results
       return Response.json({
         reply: `⭐ Top channels for "${cleaned}":`,
-        data: result,
-        type: "tool_result"
+        type: "tool_result",
+        data: {
+          data: {
+            items: channelsAsVideos
+          }
+        }
       });
     }
+
 
 
     /* ------------------------------------------
