@@ -18,9 +18,14 @@ export default function VideoCard({ item }) {
   // ⭐ Detect channel vs video
   const isChannel = videoId?.startsWith("UC");
 
-  // ⭐ Correct URL based on type
+  // ⭐ Extract YouTube handle if available (MOST IMPORTANT)
+  const handle = snippet.customUrl || null; // e.g., "@theMITmonk"
+
+  // ⭐ Correct URL selection
   const url = isChannel
-    ? `https://www.youtube.com/channel/${videoId}`
+    ? handle
+      ? `https://www.youtube.com/${handle}` // open handle
+      : `https://www.youtube.com/channel/${videoId}` // fallback
     : `https://www.youtube.com/watch?v=${videoId}`;
 
   return (
@@ -110,7 +115,6 @@ export default function VideoCard({ item }) {
             {channel}
           </span>
 
-          {/* Only show views for videos */}
           {!isChannel && views && (
             <span
               style={{
