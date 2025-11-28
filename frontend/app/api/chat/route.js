@@ -386,16 +386,28 @@ export async function POST(req) {
        BEST / TOP CHANNELS
     ------------------------------------------ */
     if (intent === "top_channels") {
-      const cleaned = message
+      // STEP 1 — Clean query properly
+      let cleaned = message
         .replace(/best|top|recommend/gi, "")
         .replace(/channels?/gi, "")
-        .trim() || "technology";
+        .trim();
 
-      const result = await callMCP("search_channels", {
-        query: cleaned,
-        max_results: 10
-      }, req);  // 🔥 PASS REQUEST
+      // STEP 2 — If cleaned is empty or too short, set a strong default
+      if (!cleaned || cleaned.length < 2) {
+        cleaned = "best tech youtube channels";
+      } else {
+        // STEP 3 — Improve search quality by expanding query
+        cleaned = `${cleaned} youtube channels`;
+      }
 
+      // STEP 4 — Call MCP
+      const result = await callMCP(
+        "search_channels",
+        { query: cleaned, max_results: 10 },
+        req
+      );
+
+      // STEP 5 — Handle no results
       if (!result.success || !result.data?.items?.length) {
         return Response.json({
           reply: `❌ No channels found for "${cleaned}".`,
@@ -403,12 +415,14 @@ export async function POST(req) {
         });
       }
 
+      // STEP 6 — Successful response
       return Response.json({
         reply: `⭐ Top channels for "${cleaned}":`,
         data: result,
         type: "tool_result"
       });
     }
+
 
     /* ------------------------------------------
        RECOMMEND
