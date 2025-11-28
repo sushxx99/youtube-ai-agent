@@ -24,24 +24,29 @@ export default function Home() {
     const res = await fetch(`${BACKEND_URL}/oauth/userinfo`, {
       credentials: "include",
     });
+
     const data = await res.json();
 
     if (data.logged_in) {
       setUser(data.profile);
 
-      // 🔥 Fetch backend token & store it
+      // 🔥 Get access token from backend
       const tokenRes = await fetch(`${BACKEND_URL}/oauth/token`, {
         credentials: "include",
       });
-      const tokenData = await tokenRes.json();
 
+      const tokenData = await tokenRes.json();
+      
       if (tokenData.token) {
         localStorage.setItem("yt_access_token", tokenData.token);
-        console.log("✅ Token saved to localStorage");
+        console.log("Stored token:", tokenData.token.substring(0, 20));
       }
     }
-  } catch (err) {}
+  } catch (err) {
+    console.error(err);
+  }
 }
+
 
 
   async function sendMessage() {
@@ -51,23 +56,25 @@ export default function Home() {
   setInput("");
   setLoading(true);
 
+  // Add user message
   setMessages(prev => [...prev, { role: "user", text: userMsg }]);
 
   try {
-    // 🔥 Retrieve token from localStorage
+    // 🔥 Get token from localStorage
     const token = localStorage.getItem("yt_access_token");
 
     const res = await fetch("/api/chat", {
       method: "POST",
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
-        "Authorization": token ? `Bearer ${token}` : ""
+        ...(token && { "Authorization": `Bearer ${token}` })
       },
-      body: JSON.stringify({ message: userMsg }),
+      body: JSON.stringify({ message: userMsg })
     });
 
     const data = await res.json();
 
+    // Tool result with video list
     if (data.type === "tool_result" && data.data?.data?.items) {
       setMessages(prev => [
         ...prev,
@@ -75,14 +82,23 @@ export default function Home() {
         { role: "videos", videos: data.data.data.items }
       ]);
     } else {
-      setMessages(prev => [...prev, { role: "assistant", text: data.reply }]);
+      // Normal chat response
+      setMessages(prev => [
+        ...prev,
+        { role: "assistant", text: data.reply }
+      ]);
     }
+
   } catch (err) {
-    setMessages(prev => [...prev, { role: "assistant", text: "⚠️ Connection error" }]);
+    setMessages(prev => [
+      ...prev,
+      { role: "assistant", text: "⚠️ Connection error" }
+    ]);
   } finally {
     setLoading(false);
   }
 }
+
 
 
   useEffect(() => {

@@ -20,32 +20,32 @@ function getSession(id) {
    CALL MCP TOOL - FIXED WITH COOKIE FORWARDING
 ------------------------------------------ */
 async function callMCP(tool, args, request) {
-  // ---------------------------------------------
-  // 🔥 1. Extract TOKEN from Authorization header
-  // ---------------------------------------------
+  /* ---------------------------------------------
+     1. Extract Bearer Token from Authorization header
+  --------------------------------------------- */
   const authHeader = request.headers.get("authorization") || "";
   const token = authHeader.startsWith("Bearer ")
-    ? authHeader.replace("Bearer ", "")
+    ? authHeader.slice(7)
     : "";
 
   console.log("🔍 TOKEN sent to backend:", token ? "YES" : "NO");
 
-  // ---------------------------------------------
-  // 🔥 2. Forward cookies as fallback
-  // ---------------------------------------------
+  /* ---------------------------------------------
+     2. Forward cookies (fallback for browser)
+  --------------------------------------------- */
   const forwardedCookies = request.headers.get("x-forwarded-cookies") || "";
   const regularCookies = request.headers.get("cookie") || "";
   const cookies = forwardedCookies || regularCookies;
 
-  // ---------------------------------------------
-  // 🔥 3. Call backend with BOTH Token + Cookie
-  // ---------------------------------------------
+  /* ---------------------------------------------
+     3. Final request to backend (Token + Cookies)
+  --------------------------------------------- */
   const res = await fetch(`${MCP_URL}/call`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": token ? `Bearer ${token}` : "",  // <-- IMPORTANT
-      "Cookie": cookies
+      ...(token && { "Authorization": `Bearer ${token}` }),
+      ...(cookies && { "Cookie": cookies })
     },
     body: JSON.stringify({
       tool_name: tool,
