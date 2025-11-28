@@ -9,23 +9,26 @@ logger = logging.getLogger(__name__)
 # ============================================================
 # HELPER: EXTRACT TOKEN FROM REQUEST
 # ============================================================
-
-def get_auth_token(request: Request):
+def get_auth_token(request: Request) -> Optional[str]:
     """
-    Extract OAuth token from Authorization header OR cookies
+    Extract authentication token from:
+    1. Authorization header (preferred)
+    2. Cookies
+    3. Cookie header forwarded from Next.js
     """
+    # 1️⃣ Authorization Header (Bearer token)
+    auth_header = request.headers.get("authorization", "")
+    if auth_header.startswith("Bearer "):
+        token = auth_header.replace("Bearer ", "")
+        if token:
+            return token
 
-    # 1️⃣ Authorization header wins (frontend sends this)
-    auth_header = request.headers.get("authorization")
-    if auth_header and auth_header.startswith("Bearer "):
-        return auth_header.replace("Bearer ", "")
-
-    # 2️⃣ Cookies (browser requests)
+    # 2️⃣ Normal cookies
     token = request.cookies.get("yt_access_token")
     if token:
         return token
-
-    # 3️⃣ Raw Cookie header fallback
+    
+    # 3️⃣ Forwarded cookie header
     cookie_header = request.headers.get("cookie", "")
     if cookie_header:
         for cookie in cookie_header.split(";"):
