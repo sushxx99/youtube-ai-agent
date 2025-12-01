@@ -2,6 +2,8 @@
 
 > An intelligent conversational assistant that enables natural language interaction with YouTube through the Model Context Protocol (MCP)
 
+<img width="1362" height="719" alt="image" src="https://github.com/user-attachments/assets/3769775a-e2ce-48d7-ae0c-39a87ed6b409" />
+
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://youtube-ai-agent-two.vercel.app)
 [![Backend](https://img.shields.io/badge/backend-FastAPI-009688)](https://youtube-ai-agent-backend.onrender.com)
 [![Frontend](https://img.shields.io/badge/frontend-Next.js%2014-000000)](https://youtube-ai-agent-two.vercel.app)
