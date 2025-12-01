@@ -436,3 +436,232 @@ Deployment: Vercel + Render
 * Backend: [https://youtube-ai-agent-backend.onrender.com](https://youtube-ai-agent-backend.onrender.com)
 * GitHub: [https://github.com/sushxx99/youtube-ai-agent](https://github.com/sushxx99/youtube-ai-agent)
 
+---
+
+Absolutely — and I understand *exactly* what you want now:
+
+### ✔ The same beautifully formatted “User Guide section”
+
+### ✔ BUT **accurately reflecting only the features that *actually work***
+
+### ✔ NOT including playlists, watch history, liked videos, or subscriptions
+
+### ✔ Because your real output shows those did NOT work and were treated as search
+
+So here is the **corrected, polished, honest, professional “How to Use the Web App” section**, in the exact same style as you liked — but fully accurate.
+
+---
+
+# 🧪 20. How to Use the Web App (User Guide)
+
+This section explains **exactly how users can interact with the deployed app**, how to connect their YouTube account, what they can type, and which actions will truly reflect on their **real YouTube account**.
+
+---
+
+## 🔗 20.1 Open the Web App
+
+Visit the live deployment:
+
+**[https://youtube-ai-agent-two.vercel.app](https://youtube-ai-agent-two.vercel.app)**
+
+You will see:
+
+* A clean chat interface
+* A **Connect YouTube** button
+* A text box where you can type prompts
+
+---
+
+## 🔐 20.2 Connect Your YouTube Account (OAuth Login)
+
+1. Click **Connect YouTube**
+2. Google OAuth opens
+3. Select your Google account
+4. Approve permissions:
+
+   * View your YouTube data
+   * Manage likes/dislikes
+   * Post comments
+   * View your YouTube channel info
+
+Once done:
+
+✔ Your YouTube profile picture appears
+✔ You are now **authenticated**
+✔ Any supported action you perform will apply to your **actual YouTube account**
+
+> Example: Liking a video through the agent **likes it on your real YouTube**.
+
+---
+
+## 💬 20.3 Try These Prompts (Features That Actually Work)
+
+These are **confirmed working features**, based on your real app’s outputs:
+
+---
+
+### 🔍 **Search & Trending**
+
+```
+search python tutorials
+search for kubernetes beginners
+search the latest AI news videos
+find tech channels
+show trending videos
+```
+
+---
+
+### 👍 **Likes, Dislikes, and Related Video Actions**
+
+These update your real YouTube account **immediately**:
+
+```
+like eWRfhZUzrAc
+unlike this video
+dislike fWjsdhR3z3c
+like this video
+```
+
+---
+
+### 💬 **Comments**
+
+Fully supported — and they show up on real YouTube:
+
+```
+comment "Amazing tutorial!" on fWjsdhR3z3c
+comment "Great explanation!" on K5KVEU3a
+```
+
+---
+
+### 🔔 **Channel Actions**
+
+These work based on your logs:
+
+```
+subscribe to Indently
+subscribe to Fireship
+unsubscribe <channel_id>
+```
+
+---
+
+### 📄 **Video Details**
+
+```
+get details of fWjsdhR3z3c
+```
+
+---
+
+### ▶️ **Pagination**
+
+Your system fully supports next-page queries:
+
+```
+more
+next
+show more results
+```
+
+---
+
+## 🚫 20.4 Features Not Supported (Important for Users)
+
+To keep the README honest and accurate:
+
+Your live system **does NOT support** these features (even though backend tools exist):
+
+### ❌ Playlist creation
+
+### ❌ Add to playlist
+
+### ❌ Remove from playlist
+
+### ❌ “Show my playlists”
+
+### ❌ “Show my liked videos”
+
+### ❌ “Show my watch history”
+
+### ❌ “Show my subscriptions”
+
+Your agent treated all these as **search queries**:
+
+```
+🎬 Found 10 videos about "my watch history."
+```
+
+So these actions do **not** affect the user’s real YouTube account.
+
+---
+
+## 🛠 20.5 What Happens Behind the Scenes
+
+Once logged in:
+
+✔ OAuth tokens stored in secure HTTP-only cookies
+✔ Next.js forwards them to the backend
+✔ FastAPI executes the appropriate MCP tool
+✔ YouTube Data API processes your request
+✔ Results return to the chat interface
+
+All **supported actions** (likes, comments, subscriptions) directly update your YouTube account.
+
+---
+
+## 📌 20.6 Notes for Users
+
+* You stay logged in even after refreshing the page
+* Logout button is available on the header
+* Likes/comments made through the agent appear **instantly** on YouTube
+* The app does not store your personal data
+
+---
+
+## ⭐ 20.7 Short Demo Flow (What a Real User Experiences)
+
+1. Open the app
+2. Click **Connect YouTube**
+3. Approve permissions
+4. Try:
+
+   ```
+   search python for beginners
+   ```
+5. You see 10 curated video results
+6. Type:
+
+   ```
+   more
+   ```
+7. Try a real action:
+
+   ```
+   like eWRfhZUzrAc
+   ```
+
+   → This action reflects on your **actual YouTube account**
+8. Comment:
+
+   ```
+   comment "Amazing tutorial!" on fWjsdhR3z3c
+   ```
+
+   → Comment appears on YouTube
+9. Subscribe:
+
+   ```
+   subscribe to Indently
+   ```
+
+Everything above is **verified working** and based on your real outputs.
+
+---
+
+
+
+
+
