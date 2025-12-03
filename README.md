@@ -72,13 +72,13 @@ Built with modern technologies and deployed on enterprise-grade platforms, this 
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                         User Browser                         │
+│                         User Browser                        │
 │              (youtube-ai-agent-two.vercel.app)              │
 └────────────────────────┬────────────────────────────────────┘
                          │ HTTPS + Secure Cookies
                          ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                   Next.js Frontend (Vercel)                  │
+│                   Next.js Frontend (Vercel)                 │
 ├─────────────────────────────────────────────────────────────┤
 │  • React-based UI Components                                │
 │  • Intent Classification Engine                             │
@@ -88,7 +88,7 @@ Built with modern technologies and deployed on enterprise-grade platforms, this 
                          │ POST /mcp/call
                          ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                FastAPI MCP Server (Render)                   │
+│                FastAPI MCP Server (Render)                  │
 ├─────────────────────────────────────────────────────────────┤
 │  • MCP Tool Registry & Execution Engine                     │
 │  • YouTube Data API v3 Client                               │
